@@ -1061,7 +1061,7 @@ void MySQL_HostGroups_Manager::read_only_action(char *hostname, int port, int re
 	// define a buffer that will be used for all queries
 	char *query=(char *)malloc(strlen(hostname)+strlen(Q3A)+32);
 	sprintf(query,Q1,hostname,port);
-
+	fprintf(stderr,"%s\n",query);
 	int cols=0;
 	char *error=NULL;
 	int affected_rows=0;
@@ -1074,6 +1074,7 @@ void MySQL_HostGroups_Manager::read_only_action(char *hostname, int port, int re
 		num_rows=resultset->rows_count;
 		delete resultset;
 	}
+	fprintf(stderr,"Num rows=%d\n",num_rows);
 
 	if (GloAdmin==NULL) {
 		// quick exit
@@ -1093,12 +1094,14 @@ void MySQL_HostGroups_Manager::read_only_action(char *hostname, int port, int re
 				GloAdmin->mysql_servers_wrlock();
 				GloAdmin->save_mysql_servers_runtime_to_database(false); // SAVE MYSQL SERVERS FROM RUNTIME
 				sprintf(query,Q2,hostname,port);
+				fprintf(stderr,"%s\n",query);
 				admindb->execute(query);
 				if (mysql_thread___monitor_writer_is_also_reader) {
 					sprintf(query,Q3A,hostname,port);
 				} else {
 					sprintf(query,Q3B,hostname,port);
 				}
+				fprintf(stderr,"%s\n",query);
 				admindb->execute(query);
 				GloAdmin->load_mysql_servers_to_runtime(); // LOAD MYSQL SERVERS TO RUNTIME
 				GloAdmin->mysql_servers_wrunlock();
@@ -1110,8 +1113,10 @@ void MySQL_HostGroups_Manager::read_only_action(char *hostname, int port, int re
 				GloAdmin->mysql_servers_wrlock();
 				GloAdmin->save_mysql_servers_runtime_to_database(false); // SAVE MYSQL SERVERS FROM RUNTIME
 				sprintf(query,Q4,hostname,port);
+				fprintf(stderr,"%s\n",query);
 				admindb->execute(query);
 				sprintf(query,Q5,hostname,port);
+				fprintf(stderr,"%s\n",query);
 				admindb->execute(query);
 				GloAdmin->load_mysql_servers_to_runtime(); // LOAD MYSQL SERVERS TO RUNTIME
 				GloAdmin->mysql_servers_wrunlock();
